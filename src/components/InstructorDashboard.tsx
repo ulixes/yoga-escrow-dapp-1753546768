@@ -41,21 +41,9 @@ export default function InstructorDashboard() {
 
       for (let i = 0; i < count; i++) {
         try {
-          // Read transaction data from contract
-          const transactionData = await fetch(`https://api.arbiscan.io/api`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              module: 'contract',
-              action: 'read',
-              address: ESCROW_CONTRACT_ADDRESS,
-              functionname: 'transactions',
-              args: [i],
-            })
-          });
-
           // For now, we'll create mock data since we need a proper way to read contract state
           // In a real implementation, you'd use multicall or individual contract reads
+          // This would involve reading transaction data from the contract
         } catch (error) {
           console.error('Error fetching transaction:', error);
         }
