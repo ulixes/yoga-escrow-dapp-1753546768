@@ -2,6 +2,8 @@
 
 A minimalist decentralized application for booking yoga classes using the Kleros Escrow smart contract on Arbitrum Sepolia. The app features a 5-minute cancellation window for full refunds.
 
+🚀 **Live Demo**: https://ulixes.github.io/yoga-escrow-dapp-1753546768/
+
 ## Features
 
 - 🧘 Book yoga classes with ETH payments
