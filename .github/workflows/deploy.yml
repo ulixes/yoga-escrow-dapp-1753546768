@@ -38,6 +38,8 @@ jobs:
       run: bun run build
       env:
         NODE_ENV: production
+        VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
+        VITE_YOGA_INSTRUCTOR_ADDRESS: "0xb07bb9D7Be773CD996cd092EF8b249Da49ec6ec6"
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
