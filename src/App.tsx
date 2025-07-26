@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { parseEther } from 'viem';
@@ -43,10 +43,45 @@ const sampleClasses: YogaClass[] = [
 ];
 
 function App() {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const [selectedClass, setSelectedClass] = useState<YogaClass | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState<'classes' | 'bookings'>('classes');
+
+  // Load bookings from localStorage on component mount
+  useEffect(() => {
+    if (address) {
+      const savedBookings = localStorage.getItem(`bookings_${address}`);
+      if (savedBookings) {
+        try {
+          const parsedBookings = JSON.parse(savedBookings).map((booking: any) => ({
+            ...booking,
+            transactionId: BigInt(booking.transactionId),
+            amount: BigInt(booking.amount),
+            createdAt: new Date(booking.createdAt),
+            deadline: new Date(booking.deadline),
+          }));
+          setBookings(parsedBookings);
+        } catch (error) {
+          console.error('Error loading bookings from localStorage:', error);
+        }
+      }
+    }
+  }, [address]);
+
+  // Save bookings to localStorage whenever bookings change
+  useEffect(() => {
+    if (address && bookings.length > 0) {
+      const serializableBookings = bookings.map(booking => ({
+        ...booking,
+        transactionId: booking.transactionId.toString(),
+        amount: booking.amount.toString(),
+        createdAt: booking.createdAt.toISOString(),
+        deadline: booking.deadline.toISOString(),
+      }));
+      localStorage.setItem(`bookings_${address}`, JSON.stringify(serializableBookings));
+    }
+  }, [address, bookings]);
 
   const handleBookClass = (classId: string) => {
     const yogaClass = sampleClasses.find(c => c.id === classId);

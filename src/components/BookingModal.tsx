@@ -73,8 +73,10 @@ export default function BookingModal({ yogaClass, onClose, onSuccess }: BookingM
 
   useEffect(() => {
     if (isSuccess && hash) {
-      // Transaction successful
-      onSuccess(BigInt(0)); // In real app, get transaction ID from event logs
+      // Transaction successful - use timestamp as transaction ID for now
+      // In a real implementation, you'd parse the transaction receipt for the actual ID
+      const transactionId = BigInt(Date.now());
+      onSuccess(transactionId);
       onClose();
     }
   }, [isSuccess, hash, onSuccess, onClose]);
