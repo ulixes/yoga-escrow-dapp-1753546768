@@ -5,6 +5,8 @@ import { parseEther } from 'viem';
 import YogaClassCard from './components/YogaClassCard';
 import BookingModal from './components/BookingModal';
 import MyBookings from './components/MyBookings';
+import InstructorDashboard from './components/InstructorDashboard';
+import { YOGA_INSTRUCTOR_ADDRESS } from './config/escrowAbi';
 import type { YogaClass, Booking } from './types';
 import './App.css';
 
@@ -46,7 +48,10 @@ function App() {
   const { isConnected, address } = useAccount();
   const [selectedClass, setSelectedClass] = useState<YogaClass | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [activeTab, setActiveTab] = useState<'classes' | 'bookings'>('classes');
+  const [activeTab, setActiveTab] = useState<'classes' | 'bookings' | 'instructor'>('classes');
+
+  // Check if current user is the instructor
+  const isInstructor = address?.toLowerCase() === YOGA_INSTRUCTOR_ADDRESS.toLowerCase();
 
   // Load bookings from localStorage on component mount
   useEffect(() => {
@@ -146,6 +151,14 @@ function App() {
               >
                 My Bookings ({bookings.length})
               </button>
+              {isInstructor && (
+                <button 
+                  className={`tab ${activeTab === 'instructor' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('instructor')}
+                >
+                  🧘‍♀️ Instructor Dashboard
+                </button>
+              )}
             </div>
 
             {activeTab === 'classes' ? (
@@ -158,11 +171,13 @@ function App() {
                   />
                 ))}
               </div>
-            ) : (
+            ) : activeTab === 'bookings' ? (
               <MyBookings 
                 bookings={bookings} 
                 onCancel={handleCancelBooking}
               />
+            ) : (
+              <InstructorDashboard />
             )}
           </>
         )}

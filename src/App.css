@@ -470,3 +470,198 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Instructor Dashboard */
+.instructor-dashboard {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.instructor-dashboard h2 {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.not-instructor {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.not-instructor p {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.not-instructor code {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #495057;
+}
+
+.payments-section {
+  margin: 2rem 0;
+}
+
+.payments-section h3 {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.payments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.payment-item {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.payment-info p {
+  margin: 0.25rem 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.claim-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.claim-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.claim-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.no-payments {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+}
+
+.no-payments p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.instructor-info {
+  background: #e8f5e8;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.instructor-info h3 {
+  margin-top: 0;
+  color: #155724;
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.instructor-info ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.instructor-info li {
+  margin: 0.5rem 0;
+  color: #155724;
+  line-height: 1.5;
+}
+
+.contract-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #c3e6cb;
+}
+
+.contract-info p {
+  margin: 0.5rem 0;
+  color: #155724;
+}
+
+.contract-info code {
+  background: #d4edda;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  color: #155724;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .classes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-content {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .booking-item,
+  .payment-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .booking-actions,
+  .payment-actions {
+    text-align: center;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
