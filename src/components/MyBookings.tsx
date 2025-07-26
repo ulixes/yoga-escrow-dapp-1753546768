@@ -37,11 +37,13 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
         abi: escrowAbi,
         functionName: 'reimburse',
         args: [booking.transactionId, booking.amount],
+        gas: BigInt(300000), // Set explicit gas limit for cancellation
       });
       
       // Booking cancelled successfully
     } catch (error) {
       console.error('Error cancelling booking:', error);
+      alert('Cancellation failed. Please try again or check your wallet balance.');
     }
   };
 
@@ -52,9 +54,11 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
         abi: escrowAbi,
         functionName: 'executeTransaction',
         args: [transactionId],
+        gas: BigInt(200000), // Set explicit gas limit for execution
       });
     } catch (error) {
       console.error('Error executing transaction:', error);
+      alert('Transaction execution failed. Please try again.');
     }
   };
 
