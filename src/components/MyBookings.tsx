@@ -1,4 +1,4 @@
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { formatEther } from 'viem';
 import type { Booking } from '../types';
 import { escrowAbi, ESCROW_CONTRACT_ADDRESS } from '../config/escrowAbi';
@@ -20,17 +20,26 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
   const handleCancelBooking = async (booking: Booking) => {
     if (!address || booking.status !== 'pending') return;
 
-    // Check if still within 5-minute cancellation window
-    const now = new Date();
-    const bookingTime = booking.createdAt;
-    const timeDiff = (now.getTime() - bookingTime.getTime()) / 1000; // in seconds
-    
-    if (timeDiff > 300) {
-      alert('Cancellation period has expired (5 minutes)');
-      return;
-    }
-
     try {
+      // First, verify we can actually cancel by checking the contract deadline
+      const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+      
+      console.log('Attempting cancellation:', {
+        transactionId: booking.transactionId.toString(),
+        amount: booking.amount.toString(),
+        currentTime: currentTime,
+      });
+
+      // Check if still within 5-minute cancellation window (local check)
+      const now = new Date();
+      const bookingTime = booking.createdAt;
+      const timeDiff = (now.getTime() - bookingTime.getTime()) / 1000; // in seconds
+      
+      if (timeDiff > 300) {
+        alert('Cancellation period has expired (5 minutes)');
+        return;
+      }
+
       // The reimburse function requires (transactionID, amountReimbursed)
       // For cancellation within the deadline, reimburse the full amount
       writeContract({
@@ -41,13 +50,9 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
         gas: BigInt(300000), // Set explicit gas limit for cancellation
       });
       
-      console.log('Reimburse called with:', {
-        transactionId: booking.transactionId.toString(),
-        amount: booking.amount.toString(),
-      });
     } catch (error) {
       console.error('Error cancelling booking:', error);
-      alert('Cancellation failed. Please try again or check your wallet balance.');
+      alert('Cancellation failed. The deadline may have passed or the transaction may not exist. Please check the contract state.');
     }
   };
 
@@ -98,12 +103,17 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
                   <p>Amount: {formatEther(booking.amount)} ETH ({booking.amount.toString()} wei)</p>
                   <p>Status: <span className={`status ${booking.status}`}>{booking.status}</span></p>
                   <p>Booked: {booking.createdAt.toLocaleString()}</p>
+                  <p>Buyer: {booking.buyer}</p>
+                  <p>Seller: {booking.seller}</p>
                   {booking.status === 'pending' && (
                     <p>Cancellation window: {getTimeRemaining(booking)}</p>
                   )}
                   {booking.status === 'pending' && getTimeRemaining(booking) === 'Expired' && (
                     <p className="info-text">💡 After cancellation period expires, funds are held in escrow until the instructor claims them.</p>
                   )}
+                  <p className="debug-info" style={{fontSize: '0.8em', color: '#999'}}>
+                    Debug: Current user: {address} | Is buyer: {address?.toLowerCase() === booking.buyer.toLowerCase() ? 'Yes' : 'No'}
+                  </p>
                 </div>
                 
                 <div className="booking-actions">
