@@ -31,7 +31,8 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
     }
 
     try {
-      // Reimburse the full amount to the buyer
+      // The reimburse function requires (transactionID, amountReimbursed)
+      // For cancellation within the deadline, reimburse the full amount
       writeContract({
         address: ESCROW_CONTRACT_ADDRESS,
         abi: escrowAbi,
@@ -40,7 +41,10 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
         gas: BigInt(300000), // Set explicit gas limit for cancellation
       });
       
-      // Booking cancelled successfully
+      console.log('Reimburse called with:', {
+        transactionId: booking.transactionId.toString(),
+        amount: booking.amount.toString(),
+      });
     } catch (error) {
       console.error('Error cancelling booking:', error);
       alert('Cancellation failed. Please try again or check your wallet balance.');
@@ -91,11 +95,14 @@ export default function MyBookings({ bookings }: MyBookingsProps) {
                 <div className="booking-info">
                   <h3>Class ID: {booking.classId}</h3>
                   <p>Transaction ID: {booking.transactionId.toString()}</p>
-                  <p>Amount: {formatEther(booking.amount)} ETH</p>
+                  <p>Amount: {formatEther(booking.amount)} ETH ({booking.amount.toString()} wei)</p>
                   <p>Status: <span className={`status ${booking.status}`}>{booking.status}</span></p>
                   <p>Booked: {booking.createdAt.toLocaleString()}</p>
                   {booking.status === 'pending' && (
                     <p>Cancellation window: {getTimeRemaining(booking)}</p>
+                  )}
+                  {booking.status === 'pending' && getTimeRemaining(booking) === 'Expired' && (
+                    <p className="info-text">💡 After cancellation period expires, funds are held in escrow until the instructor claims them.</p>
                   )}
                 </div>
                 

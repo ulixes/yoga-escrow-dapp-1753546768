@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { formatEther } from 'viem';
+import { formatEther, decodeEventLog } from 'viem';
 import type { YogaClass } from '../types';
 import { escrowAbi, ESCROW_CONTRACT_ADDRESS, YOGA_INSTRUCTOR_ADDRESS } from '../config/escrowAbi';
 
@@ -16,7 +16,7 @@ export default function BookingModal({ yogaClass, onClose, onSuccess }: BookingM
   
   const { data: hash, writeContract, isPending } = useWriteContract();
   
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+  const { isLoading: isConfirming, isSuccess, data: receipt } = useWaitForTransactionReceipt({
     hash,
   });
 
@@ -72,14 +72,43 @@ export default function BookingModal({ yogaClass, onClose, onSuccess }: BookingM
   };
 
   useEffect(() => {
-    if (isSuccess && hash) {
-      // Transaction successful - use timestamp as transaction ID for now
-      // In a real implementation, you'd parse the transaction receipt for the actual ID
-      const transactionId = BigInt(Date.now());
-      onSuccess(transactionId);
-      onClose();
+    if (isSuccess && receipt) {
+      try {
+        // Extract transaction ID from the NativeTransactionCreated event
+        const logs = receipt.logs;
+        for (const log of logs) {
+          try {
+            const decodedLog = decodeEventLog({
+              abi: escrowAbi,
+              data: log.data,
+              topics: log.topics,
+            });
+            
+            if (decodedLog.eventName === 'NativeTransactionCreated') {
+              const transactionId = decodedLog.args._transactionID as bigint;
+              onSuccess(transactionId);
+              onClose();
+              return;
+            }
+          } catch (error) {
+            // Skip logs that don't match our ABI
+            continue;
+          }
+        }
+        
+        // Fallback if no event found
+        console.warn('NativeTransactionCreated event not found in logs');
+        const fallbackId = BigInt(Date.now());
+        onSuccess(fallbackId);
+        onClose();
+      } catch (error) {
+        console.error('Error parsing transaction receipt:', error);
+        const fallbackId = BigInt(Date.now());
+        onSuccess(fallbackId);
+        onClose();
+      }
     }
-  }, [isSuccess, hash, onSuccess, onClose]);
+  }, [isSuccess, receipt, onSuccess, onClose]);
 
   if (!yogaClass) return null;
 

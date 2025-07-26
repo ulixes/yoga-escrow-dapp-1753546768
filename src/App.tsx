@@ -96,12 +96,12 @@ function App() {
         id: `booking-${Date.now()}`,
         classId: selectedClass.id,
         transactionId,
-        buyer: '', // Will be filled from contract
-        seller: '', // Will be filled from contract
+        buyer: address || '', // Current user is the buyer
+        seller: '0xb07bb9D7Be773CD996cd092EF8b249Da49ec6ec6', // Instructor address
         amount: selectedClass.price,
         status: 'pending',
         createdAt: new Date(),
-        deadline: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+        deadline: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes from now
       };
       setBookings([...bookings, newBooking]);
     }
