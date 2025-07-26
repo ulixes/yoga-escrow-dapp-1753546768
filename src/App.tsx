@@ -15,7 +15,7 @@ const sampleClasses: YogaClass[] = [
     name: 'Morning Flow Yoga',
     instructor: 'Sarah Chen',
     duration: 60,
-    price: parseEther('0.01'),
+    price: parseEther('0.001'),
     date: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
     maxParticipants: 10,
     currentParticipants: 3,
@@ -25,7 +25,7 @@ const sampleClasses: YogaClass[] = [
     name: 'Sunset Yin Yoga',
     instructor: 'Michael Rivera',
     duration: 75,
-    price: parseEther('0.015'),
+    price: parseEther('0.0015'),
     date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
     maxParticipants: 8,
     currentParticipants: 5,
@@ -35,7 +35,7 @@ const sampleClasses: YogaClass[] = [
     name: 'Power Vinyasa',
     instructor: 'Emma Thompson',
     duration: 90,
-    price: parseEther('0.02'),
+    price: parseEther('0.002'),
     date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
     maxParticipants: 12,
     currentParticipants: 12,

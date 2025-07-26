@@ -63,9 +63,11 @@ export default function BookingModal({ yogaClass, onClose, onSuccess }: BookingM
           YOGA_INSTRUCTOR_ADDRESS,
         ],
         value: yogaClass.price,
+        gas: BigInt(500000), // Set explicit gas limit to prevent estimation issues
       });
     } catch (error) {
       console.error('Error creating transaction:', error);
+      alert('Transaction failed. Please try again or check your wallet balance.');
     }
   };
 
